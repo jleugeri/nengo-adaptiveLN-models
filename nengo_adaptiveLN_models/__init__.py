@@ -28,7 +28,7 @@ distributions.
 
 .. moduleauthor:: Johannes Leugering
 """
-from neurons import *
+from neurons import AdaptiveLN, AdaptiveLNuniform, AdaptiveLNlogNormal
 
 from nengo.builder.builder import Builder
 from nengo.builder.signal import Signal
@@ -48,12 +48,12 @@ def build_adln(model, adLN, neurons):
 
 
 @Builder.register(AdaptiveLNuniform)
-def build_adln(model, adLN, neurons):
+def build_adlnuniform(model, adLNuniform, neurons):
     model.sig[neurons]['mu_in'] = Signal(
         np.zeros(neurons.size_in), name="%s.mu_in" % neurons)
     model.sig[neurons]['sq_in'] = Signal(
         np.zeros(neurons.size_in), name="%s.sq_in" % neurons)
-    model.add_op(SimNeurons(neurons=adLN,
+    model.add_op(SimNeurons(neurons=adLNuniform,
                             J=model.sig[neurons]['in'],
                             output=model.sig[neurons]['out'],
                             states=[model.sig[neurons]['mu_in'],
@@ -61,12 +61,12 @@ def build_adln(model, adLN, neurons):
 
 
 @Builder.register(AdaptiveLNlogNormal)
-def build_adln(model, adLN, neurons):
+def build_adlnlognormal(model, adLNlognormal, neurons):
     model.sig[neurons]['mu_in'] = Signal(
         np.zeros(neurons.size_in), name="%s.mu_in" % neurons)
     model.sig[neurons]['sq_in'] = Signal(
         np.zeros(neurons.size_in), name="%s.sq_in" % neurons)
-    model.add_op(SimNeurons(neurons=adLN,
+    model.add_op(SimNeurons(neurons=adLNlognormal,
                             J=model.sig[neurons]['in'],
                             output=model.sig[neurons]['out'],
                             states=[model.sig[neurons]['mu_in'],
