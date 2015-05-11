@@ -16,7 +16,7 @@ with open(os.path.join(root, 'README.md')) as readme:
     long_description = readme.read()
 
 setup(
-    name="nengo_alif_steady_state",
+    name="nengo_adaptiveLN_models",
     version=1.0,
     author="Johannes Leugering",
     author_email="jleugeri@uos.de",
