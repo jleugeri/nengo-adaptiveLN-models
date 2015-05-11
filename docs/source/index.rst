@@ -1,9 +1,6 @@
 Adaptive LN neuron models for NENGO
 ***********************************
 
-.. image:: https://readthedocs.org/projects/nengo-adaptiveln-models/badge/?version=latest
-:target: https://readthedocs.org/projects/nengo-adaptiveln-models/?badge=latest
-:alt: Documentation Status
 
 .. automodule:: nengo_adaptiveLN_models
 
