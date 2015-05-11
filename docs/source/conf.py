@@ -17,7 +17,8 @@ import os
 import shlex
 import mock
  
-MOCK_MODULES = ['numpy', 'scipy', 'nengo', 'nengo.neurons', 'nengo.params', 'nengo.builder', 'nengo.builder.builder', 'nengo.builder.signal', 'nengo.builder.neurons', 'scipy.special']
+MOCK_MODULES = ['numpy', 'scipy', 'scipy.special']
+#'nengo', 'nengo.neurons', 'nengo.params', 'nengo.builder', 'nengo.builder.builder', 'nengo.builder.signal', 'nengo.builder.neurons'
 for mod_name in MOCK_MODULES:
     sys.modules[mod_name] = mock.Mock()
 
