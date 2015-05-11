@@ -28,6 +28,7 @@ distributions.
 
 .. moduleauthor:: Johannes Leugering
 """
+import numpy as np
 from neurons import AdaptiveLN, AdaptiveLNuniform, AdaptiveLNlogNormal
 
 from nengo.builder.builder import Builder

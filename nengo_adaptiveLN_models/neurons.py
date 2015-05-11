@@ -51,6 +51,7 @@ _docstring_template = \
 
 import numpy as np
 import scipy as sp
+import scipy.special
 
 from nengo.neurons import NeuronType
 from nengo.params import NumberParam
@@ -111,7 +112,7 @@ class AdaptiveLN(NeuronType):
         sq_in   = np.ones_like(x)
         #self.position   = np.zeros_like(position)
         #self.scale      = np.ones_like(scale)
-        self.step_math(dt=1, J=np.outer(sq_in, x), output=out, mu_in=mu_in, sq_in=sq_in)
+        self.step_math(dt=1, J=np.ones_like(scale)*x, output=out, mu_in=mu_in, sq_in=sq_in)
         return out
 
     def step_math(self, dt, J, output, mu_in, sq_in):
@@ -129,7 +130,7 @@ class AdaptiveLN(NeuronType):
         :type mu_in:    ndarray(dtype=float)
         """
         # Work-around for the bug that sets all internal variables to 0 in the first step:
-        sq_in[sq_in==0] = 1 # sq_in should never be exactly zero 
+        sq_in[sq_in<1e-10] = 1 # sq_in should never be exactly zero 
 
         # Update the moving average of the sufficient statistics of the input distribution:
         alpha = dt/self.tau_adapt
@@ -155,7 +156,7 @@ class AdaptiveLNuniform(AdaptiveLN):
         :param whitened:    whitened input to the neurons' nonlinearity
         :rtype:             ndarray(dtype=float)
         """
-        return self.position + self.scale*0.5*(sp.special.erf(whitened/sqrt(2))+1)
+        return self.position + self.scale*0.5*(sp.special.erf(whitened/np.sqrt(2))+1)
 
 
 
