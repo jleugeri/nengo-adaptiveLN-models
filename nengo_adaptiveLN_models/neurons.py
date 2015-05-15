@@ -65,14 +65,14 @@ class AdaptiveLN(NeuronType):
     def __init__(self, tau_adapt=1000.0, position=np.zeros((1,)), scale=np.zeros((1,))):
         """Set up the adaptive linear-non-linear neuron model.
         
-        :param tau_adapt:   time-constant of the adaptation variables
+        :param tau_adapt:   time-constant of the adaptation variables in seconds
         :type tau_adapt:    scalar
         :param scale: a scale parameter (typically multiplicative, depending on the output distribution)
         :type scale:  ndarry(dtype=float)
         :param position: a position parameter (typically additive, depending on the output distribution)
         :type scale:  ndarry(dtype=float)
         """
-        self.tau_adapt  = tau_adapt
+        self.alpha      = 1.0/tau_adapt
         self.position   = position
         self.scale      = scale
 
@@ -112,7 +112,7 @@ class AdaptiveLN(NeuronType):
         sq_in   = np.ones_like(x)
         #self.position   = np.zeros_like(position)
         #self.scale      = np.ones_like(scale)
-        self.step_math(dt=1, J=np.ones_like(scale)*x, output=out, mu_in=mu_in, sq_in=sq_in)
+        self.step_math(dt=0.001, J=np.ones_like(scale)*x, output=out, mu_in=mu_in, sq_in=sq_in)
         return out
 
     def step_math(self, dt, J, output, mu_in, sq_in):
@@ -129,16 +129,15 @@ class AdaptiveLN(NeuronType):
         :param sq_in:   the estimated mean of squares (2nd sufficient statistic) of the normal input
         :type mu_in:    ndarray(dtype=float)
         """
-        # Work-around for the bug that sets all internal variables to 0 in the first step:
-        sq_in[sq_in<1e-10] = 1 # sq_in should never be exactly zero 
 
         # Update the moving average of the sufficient statistics of the input distribution:
-        alpha = dt/self.tau_adapt
-        mu_in[...] += alpha*(J      - mu_in)
-        sq_in[...] += alpha*(J**2   - sq_in)
+        mu_in[...] += dt*self.alpha*(J      - mu_in)
+        sq_in[...] += dt*self.alpha*(J**2   - sq_in)
 
         # Whiten the input using the running ML estimates of the parameters of the input distribution
-        whitened = (J - mu_in) / np.sqrt(sq_in - mu_in**2)
+        # Add 1e-10 as a dirty hack to avoid division by zero for the first
+        # samples without causing much computational overhead.
+        whitened = (J - mu_in) / np.sqrt(sq_in - mu_in**2 + 1e-10)
 
         # Calculate the output by applying the non-linearity to the whitened normal input
         output[...] = self.nonlinearity(whitened)
@@ -156,10 +155,7 @@ class AdaptiveLNuniform(AdaptiveLN):
         :param whitened:    whitened input to the neurons' nonlinearity
         :rtype:             ndarray(dtype=float)
         """
-        return self.position + self.scale*0.5*(sp.special.erf(whitened/np.sqrt(2))+1)
-
-
-
+        return self.position + self.scale*0.5*sp.special.erf(whitened/np.sqrt(2))
 
 
 
