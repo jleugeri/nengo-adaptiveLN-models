@@ -1,7 +1,9 @@
 # nengo-adaptiveLN-models
+[![Documentation Status](https://readthedocs.org/projects/nengo-adaptiveln-models/badge/?version=latest)](https://readthedocs.org/projects/nengo-adaptiveln-models/?badge=latest)
+
 Provides [python](https://python.org) classes that extend the [NENGO library](https://github.com/nengo/nengo) by adding simplistic adaptive linear-non-linear neurons models.
 
-You can find a preliminary documentation on [readthedocs.org](http://nengo-adaptiveln-models.readthedocs.org/en/latest/) [![Documentation Status](https://readthedocs.org/projects/nengo-adaptiveln-models/badge/?version=latest)](https://readthedocs.org/projects/nengo-adaptiveln-models/?badge=latest)
+You can find a preliminary documentation on [readthedocs.org](http://nengo-adaptiveln-models.readthedocs.org/en/latest/) 
 
 Installation:
 =============
